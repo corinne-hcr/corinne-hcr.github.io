@@ -1,1 +1,104 @@
-<h1>Hello Project 0</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CS180 Project 0 – Becoming Friends with Your Camera</title>
+  <style>
+    :root { --maxw: 980px; --primary:#1f2b5c; --muted:#5b6b7b; --chip:#eef3ff; }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; margin:0; color:#222; line-height:1.6; background:#fafbfc; }
+    header { background:#f4f6ff; border-bottom:1px solid #e9eef8; padding:28px 16px; }
+    header .wrap, main { max-width: var(--maxw); margin:0 auto; }
+    h1 { margin:0 0 4px; color:var(--primary); font-size:28px; }
+    .sub { color:var(--muted); }
+    h2 { margin:36px 0 12px; color:var(--primary); border-left:4px solid var(--primary); padding-left:10px; }
+    .pair { display:grid; grid-template-columns:1fr; gap:16px; margin:10px 0 6px; }
+    @media (min-width:720px){ .pair { grid-template-columns:1fr 1fr; } }
+    figure { margin:0; text-align:center; }
+    img, video { width:100%; height:auto; border-radius:10px; border:1px solid #e6e9ef; background:#fff; }
+    figcaption { font-size:14px; color:#4a5568; margin-top:8px; }
+    .discussion-title { font-weight:700; color:var(--primary); margin:14px 0 6px; }
+    .note { background:var(--chip); border:1px solid #dbe6ff; padding:10px 12px; border-radius:10px; }
+    a { color:#3658ff; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>CS180 Project 0</h1>
+      <div class="sub">Becoming Friends with Your Camera — <em>Your Name</em></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Part 1 -->
+    <section id="part1">
+      <h2>Part 1: Selfie</h2>
+      <div class="pair">
+        <figure>
+          <img loading="lazy" src="media/part1_close.jpeg" alt="Close-up portrait (very near)">
+          <figcaption>close-up portrait (taken very near)</figcaption>
+        </figure>
+        <figure>
+          <img loading="lazy" src="media/part1_far.jpeg" alt="Portrait after stepping back and zooming in">
+          <figcaption>portrait after stepping back and zooming in</figcaption>
+        </figure>
+      </div>
+      <div class="discussion-title">Discussion</div>
+      <p class="note">
+        In the first image, where the camera is held very close to my mother’s face, the wide field of view
+        exaggerates features nearest to the lens (e.g., nose and forehead) and shrinks features farther away.
+        When the camera is moved back and zoomed in, the perspective is flattened and the relative size
+        difference between near and far features is reduced, so her facial proportions look more natural.
+      </p>
+    </section>
+
+    <!-- Part 2 -->
+    <section id="part2">
+      <h2>Part 2: Architectural Perspective Compression (with Grey)</h2>
+      <div class="pair">
+        <figure>
+          <img loading="lazy" src="media/part2_13mm.jpeg" alt="Grey at 13 mm (ultra-wide)">
+          <figcaption>Grey at 13 mm (ultra-wide)</figcaption>
+        </figure>
+        <figure>
+          <img loading="lazy" src="media/part2_26mm.jpeg" alt="Grey at 26 mm (wide)">
+          <figcaption>Grey at 26 mm (wide)</figcaption>
+        </figure>
+      </div>
+      <div class="pair">
+        <figure>
+          <img loading="lazy" src="media/part2_52mm.jpeg" alt="Grey at 52 mm (tele)">
+          <figcaption>Grey at 52 mm (tele)</figcaption>
+        </figure>
+        <figure>
+          <img loading="lazy" src="media/part2_78mm.jpeg" alt="Grey at 78 mm (tele)">
+          <figcaption>Grey at 78 mm (tele)</figcaption>
+        </figure>
+      </div>
+      <div class="discussion-title">Discussion</div>
+      <p class="note">
+        This is Grey. In the wide-angle images, Grey appears small in the foreground while the building and
+        handrails stretch dramatically into the background, creating a strong sense of depth. As the focal
+        length increases, Grey occupies more of the frame and the building seems to shift forward, appearing
+        much closer behind him. 
+      </p>
+    </section>
+
+    <!-- Part 3 -->
+    <section id="part3">
+      <h2>Part 3: Dolly Zoom (Vertigo Effect) — Grey</h2>
+      <div class="pair">
+        <figure>
+          <img loading="lazy" src="media/part3_dollyzoom.gif" alt="Dolly zoom with Grey">
+          <figcaption>dolly zoom with Grey (camera moves back while zooming in)</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <p><a href="../index.html">← Back to Home</a></p>
+  </main>
+</body>
+</html>
