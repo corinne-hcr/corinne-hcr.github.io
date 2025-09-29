@@ -174,7 +174,7 @@
         </div>
         
         <div class="full-width-image">
-            <img src="results/part1/box_filter_comparison.png" alt="Box Filter Comparison">
+            <img src="code/results/part1/box_filter_comparison.png" alt="Box Filter Comparison">
             <div class="image-caption">9x9 Box Filter: Comparison of all three implementations (4-loops, 2-loops, and SciPy)</div>
         </div>
         
@@ -183,7 +183,7 @@
         </div>
 
         <div class="full-width-image">
-            <img src="results/part1/derivative_filters_comparison.png" alt="Derivative Filters Comparison">
+            <img src="code/results/part1/derivative_filters_comparison.png" alt="Derivative Filters Comparison">
             <div class="image-caption">Finite difference operators Dx and Dy: Comparison of all three implementations</div>
         </div>
 
@@ -191,7 +191,7 @@
         <p>Applied finite difference operators Dx=[1,0,-1] and Dy=[[1],[0],[-1]] to detect edges in the cameraman image. I computed partial derivatives in x and y directions, then calculated the gradient magnitude and binarized it using a threshold at the 95th percentile to suppress noise while preserving real edges.</p>
         
         <div class="full-width-image">
-            <img src="results/part1/finite_difference_edges.png" alt="Edge Detection">
+            <img src="code/results/part1/finite_difference_edges.png" alt="Edge Detection">
             <div class="image-caption">Edge detection using finite difference operators: partial derivatives and gradient magnitude</div>
         </div>
         
@@ -211,7 +211,7 @@
         <p>I compared two approaches: (1) blur first, then apply difference operators, and (2) create DoG filters and apply them directly. Both methods produce identical results, demonstrating that convolution is associative.</p>
         
         <div class="full-width-image">
-            <img src="results/part1/dog_edge_detection_comparison.png" alt="DoG Edge Detection">
+            <img src="code/results/part1/dog_edge_detection_comparison.png" alt="DoG Edge Detection">
             <div class="image-caption">Comparison of edge detection methods: without Gaussian (Part 1.2), with Gaussian smoothing, and DoG filters. Bottom row shows the DoG_x, DoG_y filters and the original Gaussian filter.</div>
         </div>
         
@@ -237,18 +237,18 @@
         <p>Implemented unsharp masking: sharpen = original + α × (original - blurred). The technique enhances high-frequency details by adding back the high-pass filtered content. I tested different parameter combinations and selected sigma=2.0 and alpha=1.5 for optimal balance between sharpening effect and artifact suppression.</p>
         
         <div class="full-width-image">
-            <img src="results/part2/part1_taj_mahal_sharpening.png" alt="Taj Mahal Sharpening">
+            <img src="code/results/part2/part1_taj_mahal_sharpening.png" alt="Taj Mahal Sharpening">
             <div class="image-caption">Taj Mahal: Original → Blurred → High Frequencies → Sharpened</div>
         </div>
         
         <div class="full-width-image">
-            <img src="results/part2/part2_orange_cat_sharpening.png" alt="Orange Cat Sharpening">
+            <img src="code/results/part2/part2_orange_cat_sharpening.png" alt="Orange Cat Sharpening">
             <div class="image-caption">Orange Cat: Demonstrating unsharp masking on my chosen image</div>
         </div>
         
         <h4>Evaluation: Can We Recover Lost Details?</h4>
         <div class="full-width-image">
-            <img src="results/part2/part3_evaluation_test.png" alt="Sharpening Evaluation">
+            <img src="code/results/part2/part3_evaluation_test.png" alt="Sharpening Evaluation">
             <div class="image-caption">Testing: Sharp → Blur → Re-sharpen on white cat image</div>
         </div>
         
@@ -263,7 +263,7 @@
         <p>For my favorite result, I show the complete frequency analysis as required.</p>
         
         <div class="full-width-image">
-            <img src="results/part2/hybrid_fft_analysis.jpg" alt="FFT Analysis">
+            <img src="code/results/part2/hybrid_fft_analysis.jpg" alt="FFT Analysis">
             <div class="image-caption">Frequency analysis showing original FFTs, filtered images (low-pass Derek, high-pass Nutmeg), and hybrid result FFT</div>
         </div>
         
@@ -277,14 +277,14 @@
         </div>
         
         <div class="full-width-image">
-            <img src="results/part2/hybrid_extra_result.jpg" alt="Derek-Nutmeg Hybrid">
+            <img src="code/results/part2/hybrid_extra_result.jpg" alt="Derek-Nutmeg Hybrid">
             <div class="image-caption">Derek + Nutmeg hybrid result: At close distance you see Nutmeg (high frequencies), at far distance you see Derek (low frequencies)</div>
         </div>
 
         <h4>Additional Hybrid Images</h4>
         
         <div class="full-width-image">
-            <img src="results/part2/hybrid_tiger_cat.jpg" alt="Tiger-Cat Hybrid">
+            <img src="code/results/part2/hybrid_tiger_cat.jpg" alt="Tiger-Cat Hybrid">
             <div class="image-caption">Tiger (low frequencies) + Cat (high frequencies)</div>
         </div>
 
@@ -298,12 +298,12 @@
         </div>
         
         <div class="full-width-image">
-            <img src="results/part2/gaussian_stacks.png" alt="Gaussian Stacks">
+            <img src="code/results/part2/gaussian_stacks.png" alt="Gaussian Stacks">
             <div class="image-caption">Gaussian stacks for Apple and Orange (N=5 levels, sigma=8)</div>
         </div>
         
         <div class="full-width-image">
-            <img src="results/part2/laplacian_stacks.png" alt="Laplacian Stacks">
+            <img src="code/results/part2/laplacian_stacks.png" alt="Laplacian Stacks">
             <div class="image-caption">Laplacian stacks for Apple and Orange. Note: Laplacian layers (L0-L3) shown with +0.5 offset for visualization; final layer (L4) is the Gaussian residual</div>
         </div>
 
@@ -312,7 +312,7 @@
         
         <h4>The Oraple Result</h4>
         <div class="full-width-image">
-            <img src="results/part2/oraple_result.png" alt="Oraple">
+            <img src="code/results/part2/oraple_result.png" alt="Oraple">
             <div class="image-caption">The Oraple: Apple + Orange blended with vertical seam</div>
         </div>
         
@@ -320,7 +320,7 @@
         <p>As required by the assignment, I illustrate the blending process showing masked Laplacian levels. This demonstrates how each frequency band is blended separately using the Gaussian-blurred mask at that level.</p>
         
         <div class="full-width-image">
-            <img src="results/part2/laplacian_blending_oraple.png" alt="Oraple Blending Process">
+            <img src="code/results/part2/laplacian_blending_oraple.png" alt="Oraple Blending Process">
             <div class="image-caption">Laplacian blending process: Each row shows Apple L[i]×Mask, Orange L[i]×(1-Mask), and Blended L[i] for levels 0-4. Note: Layers 0-3 shown with +0.5 offset for visualization; layer 4 is Gaussian residual.</div>
         </div>
         
@@ -329,22 +329,22 @@
         <h4>Additional Blends with Irregular Masks</h4>
         
         <div class="full-width-image">
-            <img src="results/part2/water_mountain_result.png" alt="Water Mountain Blend">
+            <img src="code/results/part2/water_mountain_result.png" alt="Water Mountain Blend">
             <div class="image-caption">Water + Mountain with horizontal mask (N=5, sigma=8)</div>
         </div>
         
         <div class="full-width-image">
-            <img src="results/part2/result_cloud_women.png" alt="Cloud Woman Blend">
+            <img src="code/results/part2/result_cloud_women.png" alt="Cloud Woman Blend">
             <div class="image-caption">Cloud sky replacement with irregular mask based on brightness detection</div>
         </div>
         
         <div class="full-width-image">
-            <img src="results/part2/koala_in_phone_detailed.png" alt="Koala in Phone">
+            <img src="code/results/part2/koala_in_phone_detailed.png" alt="Koala in Phone">
             <div class="image-caption">Koala composited into phone screen with rectangular mask. Shows original images, resized koala, mask, and final blend.</div>
         </div>
         
         <div class="full-width-image">
-            <img src="results/part2/laplacian_blending_koala_phone.png" alt="Koala Phone Blending Process">
+            <img src="code/results/part2/laplacian_blending_koala_phone.png" alt="Koala Phone Blending Process">
             <div class="image-caption">Laplacian blending process for Koala + Phone: Each row shows masked Laplacian levels and blended results (N=5, sigma=2)</div>
         </div>
     </div>
