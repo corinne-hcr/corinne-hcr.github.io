@@ -257,36 +257,38 @@
         </div>
 
         <h3>2.2 Hybrid Images</h3>
-        <p>Hybrid images are static images that change in interpretation as a function of viewing distance. The basic idea is to blend the high-frequency portion of one image with the low-frequency portion of another. I used sigma1=12 for low-pass filtering and sigma2=6 for high-pass filtering.</p>
+        <p>Hybrid images are static images that change in interpretation as a function of viewing distance. The basic idea is to blend the high-frequency portion of one image with the low-frequency portion of another. I used sigma1=12 for low-pass filtering and sigma2=6 for high-pass filtering across all examples.</p>
         
         <h4>Derek + Nutmeg (with Frequency Analysis)</h4>
-        <p>For my favorite result, I show the complete frequency analysis as required.</p>
         
         <div class="full-width-image">
             <img src="code/results/part2/hybrid_fft_analysis.jpg" alt="FFT Analysis">
-            <div class="image-caption">Frequency analysis showing original FFTs, filtered images (low-pass Derek, high-pass Nutmeg), and hybrid result FFT</div>
+            <div class="image-caption">Frequency analysis of Derek + Nutmeg hybrid. Top row: grayscale images (original Derek, original Nutmeg, low-pass filtered, high-pass filtered, hybrid result). Bottom row: corresponding FFT visualizations showing frequency domain representations.</div>
         </div>
         
         <div class="observation">
             <strong>Frequency Domain Analysis:</strong>
             <ul>
-                <li><strong>Low-pass filtered (Derek):</strong> Energy concentrated at center, high frequencies attenuated</li>
-                <li><strong>High-pass filtered (Nutmeg):</strong> Energy in outer regions, DC component suppressed</li>
+                <li><strong>Low-pass filtered (Derek):</strong> FFT shows energy concentrated at center, high frequencies attenuated</li>
+                <li><strong>High-pass filtered (Nutmeg):</strong> FFT shows energy in outer regions, DC component suppressed</li>
                 <li><strong>Hybrid FFT:</strong> Combines low-frequency center from Derek with high-frequency periphery from Nutmeg</li>
             </ul>
-        </div>
-        
-        <div class="full-width-image">
-            <img src="code/results/part2/hybrid_extra_result.jpg" alt="Derek-Nutmeg Hybrid">
-            <div class="image-caption">Derek + Nutmeg hybrid result: At close distance you see Nutmeg (high frequencies), at far distance you see Derek (low frequencies)</div>
         </div>
 
         <h4>Additional Hybrid Images</h4>
         
+        <p><strong>Tiger + Cat:</strong></p>
         <div class="full-width-image">
             <img src="code/results/part2/hybrid_tiger_cat.jpg" alt="Tiger-Cat Hybrid">
-            <div class="image-caption">Tiger (low frequencies) + Cat (high frequencies)</div>
+            <div class="image-caption">Tiger (low frequencies) + Cat (high frequencies). Shows input images and final hybrid result.</div>
         </div>
+        
+        <p><strong>Dog + Cat:</strong></p>
+        <div class="full-width-image">
+            <img src="code/results/part2/hybrid_dog_cat.jpg" alt="Dog-Cat Hybrid">
+            <div class="image-caption">Dog (low frequencies) + Cat (high frequencies). Shows input images and final hybrid result.</div>
+        </div>
+
 
         <h3>2.3 Gaussian and Laplacian Stacks</h3>
         <p>Implemented Gaussian and Laplacian stacks with N=5 levels and sigma=8. The key difference from pyramids is that stacks never downsample, so all levels remain the same dimensions. I applied these stacks to recreate Figure 3.42 from Szelski's textbook for the apple and orange blend.</p>
