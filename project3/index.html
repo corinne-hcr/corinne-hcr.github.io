@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CS180 Project 3 Part A - Image Warping and Mosaicing</title>
+<!-- Proper MathJax v3 configuration BEFORE the script -->
+<script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$','$$'], ['\\[','\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+<script async="" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f5f5f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+header {
+    text-align: center;
+    padding: 40px 0;
+    border-bottom: 3px solid #003262;
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #003262;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: #666;
+}
+
+h2 {
+    font-size: 2em;
+    color: #003262;
+    margin: 40px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #FDB515;
+}
+
+h3 {
+    font-size: 1.5em;
+    color: #003262;
+    margin: 30px 0 15px;
+}
+
+h4 {
+    font-size: 1.2em;
+    color: #003262;
+    margin: 20px 0 10px;
+}
+
+.section {
+    margin: 40px 0;
+}
+
+.formula-box {
+    background: #f9f9f9;
+    border-left: 4px solid #003262;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.math {
+    display: block;
+    text-align: center;
+    font-size: 1.15em;
+    margin: 15px 0;
+    color: #222;
+}
+
+.matrix {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.explanation {
+    background: #e8f4f8;
+    border-left: 4px solid #FDB515;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.image-container {
+    text-align: center;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+}
+
+.caption {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}
+
+.h-matrix {
+    background: #fff;
+    border: 2px solid #003262;
+    padding: 15px;
+    margin: 15px 0;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+}
+
+.h-matrix table {
+    margin: 10px auto;
+    border-collapse: collapse;
+}
+
+.h-matrix td {
+    padding: 8px 12px;
+    text-align: right;
+    font-size: 0.9em;
+}
+
+code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+}
+
+.highlight {
+    background: #fff3cd;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>CS180 Project 3 Part A</h1>
+<p class="subtitle">Image Warping and Mosaicing</p>
+</header>
+
+<!-- Part A.1: Shoot the Pictures -->
+<section class="section">
+<h2>A.1 Shoot the Pictures</h2>
+<div class="explanation">
+<strong>Photography Strategy:</strong> Images were captured by fixing the camera center of projection (COP) and rotating the camera to create panoramic sequences. Each set contains 2-3 images with 30-50% overlap between adjacent frames.
+                
+<p style="margin-top: 10px;"><strong>Image Resolution:</strong> All images were resized to a maximum width of 800 pixels before processing. This balances computation time (30 seconds vs 5-10 minutes at full resolution) with practical usability. However, at this resolution, selecting precise correspondence points becomes more challenging, as fine architectural details are smaller and less distinct.</p>
+</div>
+
+<h3>Image Set 1: Hallway 1</h3>
+<div class="image-grid">
+<div class="image-container">
+<img alt="Hallway 1 Image 1" src="code/b1.jpg"/>
+<p class="caption">Image 1</p>
+</div>
+<div class="image-container">
+<img alt="Hallway 1 Image 2" src="code/b2.jpg"/>
+<p class="caption">Image 2</p>
+</div>
+</div>
+
+<h3>Image Set 2: Physics Building</h3>
+<div class="image-grid">
+<div class="image-container">
+<img alt="Physics Building Image 1" src="code/phy1.jpg"/>
+<p class="caption">Image 1</p>
+</div>
+<div class="image-container">
+<img alt="Physics Building Image 2" src="code/phy2.jpg"/>
+<p class="caption">Image 2</p>
+</div>
+<div class="image-container">
+<img alt="Physics Building Image 3" src="code/phy3.jpg"/>
+<p class="caption">Image 3</p>
+</div>
+</div>
+
+<h3>Image Set 3: Hallway 2</h3>
+<div class="image-grid">
+<div class="image-container">
+<img alt="Hallway 2 Image 1" src="code/a1.jpg"/>
+<p class="caption">Image 1</p>
+</div>
+<div class="image-container">
+<img alt="Hallway 2 Image 2" src="code/a2.jpg"/>
+<p class="caption">Image 2</p>
+</div>
+</div>
+</section>
+
+<!-- Part A.2: Recover Homographies -->
+<section class="section">
+<h2>A.2 Recover Homographies</h2>
+<div class="explanation">
+<strong>Method Overview:</strong> The homography matrix H is computed using correspondence points manually selected between image pairs. The transformation is solved using least squares through Singular Value Decomposition (SVD).
+</div>
+
+<h3>Mathematical Formulation</h3>
+
+<div class="formula-box">
+<p><strong>Homography Transformation (Homogeneous Coordinates):</strong></p>
+<div class="math">\[\begin{bmatrix} wx' \\ wy' \\ w \end{bmatrix} = 
+\mathbf{H}
+\begin{bmatrix} x \\ y \\ 1 \end{bmatrix}\]</div>
+<p style="margin-top: 15px;">Where the homography matrix is:</p>
+<div class="math">\[\mathbf{H} = \begin{bmatrix} 
+h_1 & h_2 & h_3 \\ 
+h_4 & h_5 & h_6 \\ 
+h_7 & h_8 & h_9 
+\end{bmatrix}\]</div>
+<p style="margin-top: 20px;"><strong>Dividing by w to get normalized coordinates:</strong></p>
+<div class="math">\[x' = \frac{h_1 x + h_2 y + h_3}{h_7 x + h_8 y + h_9}\]</div>
+<div class="math">\[y' = \frac{h_4 x + h_5 y + h_6}{h_7 x + h_8 y + h_9}\]</div>
+</div>
+
+<div class="formula-box">
+<p><strong>Cross-multiplying to eliminate denominators:</strong></p>
+<div class="math">\[x'(h_7 x + h_8 y + h_9) = h_1 x + h_2 y + h_3\]</div>
+<div class="math">\[y'(h_7 x + h_8 y + h_9) = h_4 x + h_5 y + h_6\]</div>
+<p style="margin-top: 20px;"><strong>Rearranging to move all terms to one side:</strong></p>
+<div class="math">\[h_1 x + h_2 y + h_3 - h_7(xx') - h_8(yx') - h_9(x') = 0\]</div>
+<div class="math">\[h_4 x + h_5 y + h_6 - h_7(xy') - h_8(yy') - h_9(y') = 0\]</div>
+<p style="margin-top: 20px;"><strong>Multiplying by -1 to match standard form:</strong></p>
+<div class="math">\[-h_1 x - h_2 y - h_3 + h_7(xx') + h_8(yx') + h_9(x') = 0\]</div>
+<div class="math">\[-h_4 x - h_5 y - h_6 + h_7(xy') + h_8(yy') + h_9(y') = 0\]</div>
+</div>
+
+<div class="formula-box">
+<p><strong>Linear System for each point correspondence:</strong></p>
+<p>For each point pair $(x, y) \rightarrow (x', y')$, we obtain two equations that can be written in matrix form:</p>
+<div class="math">\[\begin{bmatrix}
+-x & -y & -1 & 0 & 0 & 0 & xx' & yx' & x' \\
+0 & 0 & 0 & -x & -y & -1 & xy' & yy' & y'
+\end{bmatrix}
+\begin{bmatrix}
+h_1 \\ h_2 \\ h_3 \\ h_4 \\ h_5 \\ h_6 \\ h_7 \\ h_8 \\ h_9
+\end{bmatrix}
+= 
+\begin{bmatrix}
+0 \\ 0
+\end{bmatrix}\]</div>
+<p style="margin-top: 20px;"><strong>Full System with n correspondences:</strong></p>
+<div class="math">\[\mathbf{A}\mathbf{h} = \mathbf{0}\]</div>
+<p>Matrix A has shape (2n × 9). We need at least n ≥ 4 point pairs to solve for the 8 degrees of freedom (since h₉ is used for normalization).</p>
+<p style="margin-top: 20px;"><strong>Solution via Singular Value Decomposition (SVD):</strong></p>
+<div class="math">\[\mathbf{A} = \mathbf{U} \mathbf{\Sigma} \mathbf{V}^T\]</div>
+<div class="math">\[\mathbf{h} = \text{last row of } \mathbf{V}^T \text{ (eigenvector for smallest singular value)}\]</div>
+<div class="math">\[\mathbf{H} = \text{reshape}(\mathbf{h}, 3 \times 3) / h_9 \text{ (normalize so } h_9 = 1\text{)}\]</div>
+</div>
+
+<h3>Correspondence Points Visualization</h3>
+
+<h4>Hallway 1: b1 ↔ b2</h4>
+<div class="image-container">
+<img alt="B1-B2 correspondences" src="code/hallyway_1_b1__b2_correspondences.jpg" style="max-width: 100%;"/>
+<p class="caption">Manually selected correspondence points between b1 and b2</p>
+</div>
+<div class="h-matrix">
+<strong>Recovered Homography Matrix (b1 → b2):</strong>
+<pre style="text-align: center; margin-top: 10px; font-family: monospace; font-size: 0.95em;">
+[[  1.3504  -0.0256 -203.6383]
+ [  0.1492   1.1958  -69.9777]
+ [  0.0004  -0.       1.     ]]
+</pre>
+</div>
+
+<h4>Physics Building: phy1 ↔ phy2</h4>
+<div class="image-container">
+<img alt="Phy1-Phy2 correspondences" src="code/physics_building_phy1__phy2_correspondences.jpg" style="max-width: 100%;"/>
+<p class="caption">Correspondence points between phy1 and phy2</p>
+</div>
+<div class="h-matrix">
+<strong>Recovered Homography Matrix P12 (phy1 → phy2):</strong>
+<pre style="text-align: center; margin-top: 10px; font-family: monospace; font-size: 0.95em;">
+[[  1.2777  -0.1484 -189.8984]
+ [  0.3379   1.144  -166.1635]
+ [  0.0004  -0.       1.     ]]
+</pre>
+</div>
+
+<h4>Physics Building: phy2 ↔ phy3</h4>
+<div class="image-container">
+<img alt="Phy2-Phy3 correspondences" src="code/physics_building_phy2__phy3_correspondences.jpg" style="max-width: 100%;"/>
+<p class="caption">Correspondence points between phy2 and phy3</p>
+</div>
+<div class="h-matrix">
+<strong>Recovered Homography Matrix P23 (phy2 → phy3):</strong>
+<pre style="text-align: center; margin-top: 10px; font-family: monospace; font-size: 0.95em;">
+[[  1.222   -0.1077 -136.943 ]
+ [  0.2608   1.126  -129.53  ]
+ [  0.0003  -0.       1.     ]]
+</pre>
+</div>
+
+<h4>Hallway 2: a1 ↔ a2</h4>
+<div class="image-container">
+<img alt="A1-A2 correspondences" src="code/hallway_2_a1__a2_correspondences.jpg" style="max-width: 100%;"/>
+<p class="caption">Correspondence points between a1 and a2</p>
+</div>
+<div class="h-matrix">
+<strong>Recovered Homography Matrix (a1 → a2):</strong>
+<pre style="text-align: center; margin-top: 10px; font-family: monospace; font-size: 0.95em;">
+[[  1.224    0.0008 -135.4527]
+ [  0.0895   1.1371  -54.9722]
+ [  0.0003   0.       1.     ]]
+</pre>
+</div>
+</section>
+
+<!-- Part A.3: Warp the Images -->
+<section class="section">
+<h2>A.3 Warp the Images</h2>
+<div class="explanation">
+<strong>Warping Method:</strong> Images are warped using <span class="highlight">inverse warping</span> to avoid holes in the output. Two interpolation methods are implemented and compared:
+<ul style="margin-top: 10px; margin-left: 20px;">
+<li><strong>Nearest Neighbor:</strong> Fast but produces blocky results</li>
+<li><strong>Bilinear Interpolation:</strong> Smoother results with slight computational overhead</li>
+</ul>
+</div>
+
+<h3>Rectification Examples</h3>
+<p>Warping images to remove perspective distortion (making rectangles appear as rectangles):</p>
+
+<h4>Example 1: Projection Screen</h4>
+<div class="image-grid">
+<div class="image-container">
+<img alt="Screen Original" src="code/screen.jpg"/>
+<p class="caption">Before Rectification</p>
+</div>
+<div class="image-container">
+<img alt="Screen Nearest Neighbor" src="code/screen_nn.jpg"/>
+<p class="caption">After Rectification (Nearest Neighbor)</p>
+</div>
+<div class="image-container">
+<img alt="Screen Bilinear" src="code/screen_bilinear.jpg"/>
+<p class="caption">After Rectification (Bilinear)</p>
+</div>
+</div>
+
+<h4>Example 2: Blue Poster</h4>
+<div class="image-grid">
+<div class="image-container">
+<img alt="Blue Poster Original" src="code/blue.jpg"/>
+<p class="caption">Before Rectification</p>
+</div>
+<div class="image-container">
+<img alt="Blue Poster NN" src="code/blue_nn.jpg"/>
+<p class="caption">Nearest Neighbor</p>
+</div>
+<div class="image-container">
+<img alt="Blue Poster Bilinear" src="code/blue_bilinear.jpg"/>
+<p class="caption">Bilinear</p>
+</div>
+</div>
+
+<h4>Example 3: Door</h4>
+<div class="image-grid">
+<div class="image-container">
+<img alt="Door Original" src="code/door.jpg"/>
+<p class="caption">Before Rectification</p>
+</div>
+<div class="image-container">
+<img alt="Door NN" src="code/door_nn.jpg"/>
+<p class="caption">Nearest Neighbor</p>
+</div>
+<div class="image-container">
+<img alt="Door Bilinear" src="code/door_bilinear.jpg"/>
+<p class="caption">Bilinear</p>
+</div>
+</div>
+
+<div class="explanation">
+<strong>Observation:</strong> Bilinear interpolation produces noticeably smoother edges and reduces aliasing artifacts compared to nearest neighbor interpolation. The difference is particularly visible in diagonal lines and curved features.
+                
+<p style="margin-top: 10px;"><strong>Speed vs Quality Trade-off:</strong></p>
+<ul style="margin-left: 20px;">
+<li><strong>Nearest Neighbor:</strong> Fastest method (~10x faster than bilinear) but produces blocky, pixelated results with visible staircase artifacts on diagonal edges</li>
+<li><strong>Bilinear Interpolation:</strong> Slower but produces significantly smoother results. The quality improvement justifies the computational cost for final mosaics</li>
+</ul>
+<p style="margin-top: 10px;">For the final panoramas in Section A.4, bilinear interpolation was used exclusively to ensure smooth blending.</p>
+</div>
+</section>
+
+<!-- Part A.4: Image Mosaicing -->
+<section class="section">
+<h2>A.4 Blend the Images into a Mosaic</h2>
+<div class="explanation">
+<strong>Blending Strategy:</strong> A <span class="highlight">one-shot warping</span> approach is used where all images are warped to a common projection plane. Alpha masks with linear feathering are created on the original images before warping, then weighted averaging is applied to blend overlapping regions smoothly.
+                
+<p style="margin-top: 10px;"><strong>Key Steps:</strong></p>
+<ol style="margin-left: 20px;">
+<li>Select middle image as reference frame (unwarped coordinate system)</li>
+<li>Compute transform matrices for all other images relative to reference</li>
+<li>Create alpha masks (center=1, edges=0) on original images before warping</li>
+<li>Warp all images (including reference with identity transform) with their alpha channels using bilinear interpolation</li>
+<li>Blend using weighted average: Color = Σ(Image × Alpha) / Σ(Alpha)</li>
+</ol>
+<p style="margin-top: 10px;"><strong>Alpha Blending Formula:</strong></p>
+<div class="math">\[I_{\text{blend}}(x,y) = \frac{\sum_i \alpha_i(x,y) \cdot I_i(x,y)}{\sum_i \alpha_i(x,y)}\]</div>
+</div>
+
+<h3>Mosaic 1: Hallway 1</h3>
+<div class="image-grid">
+<div class="image-container">
+<img alt="Hallway 1 Image 1" src="code/b1.jpg"/>
+<p class="caption">Source Image 1</p>
+</div>
+<div class="image-container">
+<img alt="Hallway 1 Image 2" src="code/b2.jpg"/>
+<p class="caption">Source Image 2</p>
+</div>
+<div class="image-container">
+<img alt="Hallway 1 Panorama" src="code/hw1_panorama.jpg"/>
+<p class="caption">Final Mosaic</p>
+</div>
+</div>
+
+<h3>Mosaic 2: Physics Building</h3>
+<div class="image-grid">
+<div class="image-container">
+<img alt="Phy 1" src="code/phy1.jpg"/>
+<p class="caption">Source Image 1</p>
+</div>
+<div class="image-container">
+<img alt="Phy 2" src="code/phy2.jpg"/>
+<p class="caption">Source Image 2</p>
+</div>
+<div class="image-container">
+<img alt="Phy 3" src="code/phy3.jpg"/>
+<p class="caption">Source Image 3</p>
+</div>
+<div class="image-container">
+<img alt="Physics Panorama" src="code/phy_panorama.jpg"/>
+<p class="caption">Final Mosaic</p>
+</div>
+</div>
+
+<h3>Mosaic 3: Hallway 2</h3>
+<div class="image-grid">
+<div class="image-container">
+<img alt="Hallway 2 Image 1" src="code/a1.jpg"/>
+<p class="caption">Source Image 1</p>
+</div>
+<div class="image-container">
+<img alt="Hallway 2 Image 2" src="code/a2.jpg"/>
+<p class="caption">Source Image 2</p>
+</div>
+<div class="image-container">
+<img alt="Hallway 2 Panorama" src="code/sh_panorama.jpg"/>
+<p class="caption">Final Mosaic</p>
+</div>
+</div>
+
+<div class="explanation">
+<strong>Results:</strong> The weighted averaging approach successfully eliminates visible seams in most areas. The linear alpha feathering provides smooth transitions in overlapping regions.
+</div>
+</section>
+
+</div>
+</body>
+</html>
