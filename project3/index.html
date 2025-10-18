@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>CS180 Project 3 Part A - Image Warping and Mosaicing</title>
+<title>CS180 Project 3 - Image Warping and Mosaicing</title>
 <!-- Proper MathJax v3 configuration BEFORE the script -->
 <script>
     window.MathJax = {
@@ -52,6 +52,26 @@ h1 {
 .subtitle {
     font-size: 1.2em;
     color: #666;
+}
+
+.part-divider {
+    margin: 60px 0 40px;
+    padding: 30px;
+    background: linear-gradient(135deg, #003262 0%, #3B7EA1 100%);
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.part-divider h1 {
+    color: white;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+}
+
+.part-divider p {
+    font-size: 1.1em;
+    opacity: 0.9;
 }
 
 h2 {
@@ -165,14 +185,32 @@ code {
     padding: 2px 4px;
     border-radius: 3px;
 }
+
+.coolest-thing {
+    background: linear-gradient(135deg, #FDB515 0%, #FFD700 100%);
+    border-left: 5px solid #003262;
+    padding: 25px;
+    margin: 30px 0;
+    border-radius: 5px;
+}
+
+.coolest-thing h3 {
+    color: #003262;
+    margin-top: 0;
+}
 </style>
 </head>
 <body>
 <div class="container">
 <header>
-<h1>CS180 Project 3 Part A</h1>
+<h1>CS180 Project 3</h1>
 <p class="subtitle">Image Warping and Mosaicing</p>
 </header>
+
+<!-- PART A -->
+<div class="part-divider">
+<h1>Part A: Image Warping and Mosaicing</h1>
+</div>
 
 <!-- Part A.1: Shoot the Pictures -->
 <section class="section">
@@ -492,6 +530,134 @@ h_1 \\ h_2 \\ h_3 \\ h_4 \\ h_5 \\ h_6 \\ h_7 \\ h_8 \\ h_9
 </div>
 </section>
 
+<!-- PART B -->
+<div class="part-divider">
+<h1>Part B: Feature Matching for Autostitching</h1>
+</div>
+
+<section class="section">
+<h2>B.1 Harris Corner Detection and ANMS</h2>
+<div class="explanation">
+<strong>Corner Detection Pipeline:</strong>
+<ol style="margin-left: 20px; margin-top: 10px;">
+<li><strong>Harris Corner Detection:</strong> Identify interest points using the Harris corner detector</li>
+<li><strong>Adaptive Non-Maximal Suppression (ANMS):</strong> Select well-distributed corners by computing suppression radius for each corner. Each corner's radius is the distance to the nearest corner that is significantly stronger (using robustness constant c=0.9). Select the top 500-800 corners with largest suppression radii.</li>
+</ol>
+</div>
+
+<div class="image-container">
+<img alt="Harris ANMS Results" src="code/b1_harris_anms.jpg" style="max-width: 100%;"/>
+<p class="caption">Before ANMS (thousands of corners) vs After ANMS (800 well-distributed corners)</p>
+</div>
+
+<div class="explanation">
+<strong>ANMS Benefits:</strong> The suppression algorithm ensures corners are spatially distributed across the image rather than clustered in high-texture regions. This improves matching quality by providing coverage of the entire scene.
+</div>
+</section>
+
+<section class="section">
+<h2>B.2 Feature Descriptor Extraction</h2>
+<div class="explanation">
+<strong>Descriptor Extraction Process:</strong>
+<ol style="margin-left: 20px; margin-top: 10px;">
+<li>Extract 40×40 pixel patches around each corner from a blurred image (σ=2.0)</li>
+<li>Downsample to 8×8 descriptors by averaging 5×5 pixel blocks</li>
+<li>Normalize each descriptor to zero mean and unit variance</li>
+</ol>
+<p style="margin-top: 10px;">This creates rotation-invariant, bias/gain normalized feature descriptors robust to illumination changes.</p>
+</div>
+
+<div class="image-container">
+<img alt="Feature Descriptors" src="code/b2_feature_descriptors.jpg" style="max-width: 100%;"/>
+<p class="caption">Sample 8×8 feature descriptors (normalized intensity patches)</p>
+</div>
+
+<div class="image-container">
+<img alt="Feature Locations" src="code/b2_feature_descriptors_locations.jpg" style="max-width: 100%;"/>
+<p class="caption">Locations of visualized features on the image</p>
+</div>
+</section>
+
+<section class="section">
+<h2>B.3 Feature Matching</h2>
+<div class="explanation">
+<strong>Lowe's Ratio Test:</strong> For each feature in image 1, find the two nearest neighbors in image 2 based on descriptor distance. Accept a match only if the ratio of distances (1-NN / 2-NN) is below threshold (0.5-0.7). This ensures distinctiveness and reduces false matches.
+</div>
+
+<h3>Match Results</h3>
+
+<h4>Hallway 1 Matches</h4>
+<div class="image-container">
+<img alt="Hallway 1 Matches" src="code/b3_matches_hallway1.jpg" style="max-width: 100%;"/>
+<p class="caption">Feature matches between hallway images (ratio threshold = 0.5)</p>
+</div>
+
+<h4>Physics Building Matches</h4>
+<div class="image-container">
+<img alt="Physics Matches" src="code/b3_matches_physics.jpg" style="max-width: 100%;"/>
+<p class="caption">Feature matches for physics building panorama</p>
+</div>
+
+<h4>Hallway 2 Matches</h4>
+<div class="image-container">
+<img alt="Hallway 2 Matches" src="code/b3_matches_hallway2.jpg" style="max-width: 100%;"/>
+<p class="caption">Feature matches for second hallway set</p>
+</div>
+</section>
+
+<section class="section">
+<h2>B.4 RANSAC for Robust Homography Estimation</h2>
+<div class="explanation">
+<strong>RANSAC Algorithm:</strong>
+<ol style="margin-left: 20px; margin-top: 10px;">
+<li>Randomly sample 4 point correspondences</li>
+<li>Compute homography H from these 4 points</li>
+<li>Count inliers (points with reprojection error < threshold)</li>
+<li>Repeat for many iterations (2000-5000)</li>
+<li>Select H with most inliers and recompute using all inliers</li>
+</ol>
+<p style="margin-top: 10px;">Parameters used: threshold = 2.0 pixels, iterations = 5000</p>
+</div>
+
+<h3>RANSAC Inlier Visualization</h3>
+
+<h4>Hallway 1 Inliers</h4>
+<div class="image-container">
+<img alt="Hallway 1 Inliers" src="code/b4_inliers_hallway1.jpg" style="max-width: 100%;"/>
+</div>
+
+<h4>Physics Building Inliers</h4>
+<div class="image-container">
+<img alt="Physics Inliers" src="code/b4_inliers_physics.jpg" style="max-width: 100%;"/>
+</div>
+
+<h4>Hallway 2 Inliers</h4>
+<div class="image-container">
+<img alt="Hallway 2 Inliers" src="code/b4_inliers_hallway2.jpg" style="max-width: 100%;"/>
+</div>
+
+<h3>Manual vs Automatic Stitching Comparison</h3>
+
+<h4>Hallway 1 Comparison</h4>
+<div class="image-container">
+<img alt="Comparison Hallway 1" src="code/b4_comparison_hallway1.jpg" style="max-width: 100%;"/>
+</div>
+
+<h4>Physics Building Comparison</h4>
+<div class="image-container">
+<img alt="Comparison Physics" src="code/b4_comparison_physics.jpg" style="max-width: 100%;"/>
+</div>
+
+<h4>Hallway 2 Comparison</h4>
+<div class="image-container">
+<img alt="Comparison Hallway 2" src="code/b4_comparison_hallway2.jpg" style="max-width: 100%;"/>
+</div>
+
+<div class="explanation">
+<strong>Results Analysis:</strong> The automatic stitching pipeline produces results comparable to manual correspondence selection. RANSAC effectively filters most outliers from the feature matches. However, some inliers may still come from challenging regions like ground textures, vegetation, or sky, which lack distinct geometric features and are inherently difficult to align accurately. In such cases, the automated approach may not always outperform careful manual point selection. The automated method is faster and more reproducible, making it practical for most scenarios, while manual selection can achieve better precision when dealing with specific difficult features.
+</div>
+</section>
+
 </div>
 </body>
-</html>
+</html
