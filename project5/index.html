@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS180 Project 5: Diffusion Models</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.7;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fafafa;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #003262;
+            margin-bottom: 40px;
+        }
+        h1 { font-size: 2.2em; color: #003262; margin-bottom: 10px; }
+        .subtitle { font-size: 1.1em; color: #666; }
+        .author { margin-top: 15px; font-style: italic; color: #555; }
+        h2 {
+            font-size: 1.6em;
+            color: #003262;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        h3 { font-size: 1.3em; color: #444; margin: 30px 0 15px; }
+        h4 { font-size: 1.1em; color: #555; margin: 20px 0 10px; }
+        p { margin-bottom: 15px; text-align: justify; }
+        .image-container { text-align: center; margin: 25px 0; }
+        .image-container img {
+            max-width: 100%;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .image-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+        .image-row img {
+            height: 128px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+        .image-row-large img { height: 180px; }
+        .caption { font-size: 0.9em; color: #666; margin-top: 8px; font-style: italic; text-align: center; }
+        .inline-code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        .formula-box {
+            background: #f5f5f5;
+            border-left: 4px solid #003262;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+            text-align: center;
+        }
+        .section { margin-bottom: 50px; }
+        hr { border: none; border-top: 1px solid #ddd; margin: 40px 0; }
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #ddd;
+            margin-top: 50px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Project 5: Diffusion Models</h1>
+        <p class="subtitle">CS180: Intro to Computer Vision and Computational Photography</p>
+        <p class="author">Chunrui Huang · Fall 2025</p>
+    </header>
+
+    <!-- Part A -->
+    <section class="section">
+        <h2>Part A: The Power of Diffusion Models</h2>
+        <p>
+            In Part A, I explored text-to-image generation using the pretrained DeepFloyd IF diffusion model, 
+            implementing sampling loops, denoising algorithms, and creative applications like visual anagrams and hybrid images.
+        </p>
+    </section>
+
+    <hr>
+
+    <!-- Part 0: Setup -->
+    <section id="part0" class="section">
+        <h2>Part 0: Setup</h2>
+        
+        <p>
+            I used the <strong>DeepFloyd IF</strong> diffusion model, a two-stage model where stage 1 produces 64×64 images 
+            and stage 2 upsamples them to 256×256. For reproducibility, I set my random seed to <strong>8</strong>.
+        </p>
+
+        <h3>Sampling from the Model</h3>
+        <p>
+            I tested the model with three prompts, varying the number of inference steps (10, 20, 50) to observe 
+            the quality-speed tradeoff.
+        </p>
+
+        <h4>"a tired cat in class"</h4>
+        <div class="image-row">
+            <img src="code/a_tired_cat_in_class_steps10.png" alt="steps=10">
+            <img src="code/a_tired_cat_in_class_steps20.png" alt="steps=20">
+            <img src="code/a_tired_cat_in_class_steps50.png" alt="steps=50">
+        </div>
+        <p class="caption">num_inference_steps = 10 → 20 → 50</p>
+
+        <h4>"a fashionable dog eating dinner"</h4>
+        <div class="image-row">
+            <img src="code/a_fashionable_dog_eating_dinner_steps10.png" alt="steps=10">
+            <img src="code/a_fashionable_dog_eating_dinner_steps20.png" alt="steps=20">
+            <img src="code/a_fashionable_dog_eating_dinner_steps50.png" alt="steps=50">
+        </div>
+        <p class="caption">num_inference_steps = 10 → 20 → 50</p>
+
+        <h4>"a cozy bookstore"</h4>
+        <div class="image-row">
+            <img src="code/a_cozy_bookstore_steps10.png" alt="steps=10">
+            <img src="code/a_cozy_bookstore_steps20.png" alt="steps=20">
+            <img src="code/a_cozy_bookstore_steps50.png" alt="steps=50">
+        </div>
+        <p class="caption">num_inference_steps = 10 → 20 → 50</p>
+
+        <p>
+            <strong>Observations:</strong> With fewer steps (10), images appear blurry. At 50 steps, the model produces 
+            sharp, coherent images that closely match the text prompts.
+        </p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.1: Forward Process -->
+    <section id="part1-1" class="section">
+        <h2>Part 1.1: Implementing the Forward Process</h2>
+        
+        <p>
+            The forward diffusion process adds Gaussian noise to a clean image using the closed-form formula:
+        </p>
+
+        <div class="formula-box">
+            \[ x_t = \sqrt{\bar{\alpha}_t} \cdot x_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \epsilon, \quad \text{where } \epsilon \sim \mathcal{N}(0, 1) \]
+        </div>
+
+        <p>
+            I implemented <span class="inline-code">forward(im, t)</span> which takes an image and timestep, 
+            then returns the noisy image by scaling the original with \(\sqrt{\bar{\alpha}_t}\) and adding scaled Gaussian noise.
+        </p>
+        <h3>Results: Noisy Images at t = [250, 500, 750]</h3>
+        <div class="image-row">
+            <img src="code/part1_1_noisy_t250.png" alt="t=250">
+            <img src="code/part1_1_noisy_t500.png" alt="t=500">
+            <img src="code/part1_1_noisy_t750.png" alt="t=750">
+        </div>
+        <p class="caption">t=250 → t=500 → t=750</p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.2: Classical Denoising -->
+    <section id="part1-2" class="section">
+        <h2>Part 1.2: Classical Denoising</h2>
+        
+        <p>
+            I applied Gaussian blur (kernel_size=5, sigma=2) as a classical denoising method. 
+            This low-pass filter smooths noise but cannot distinguish between signal and noise, 
+            resulting in blurry outputs that fail to recover image structure.
+        </p>
+
+        <div class="image-row">
+<div class="image-row">
+    <div class="image-item">
+        <img src="code/part1_2_noisy_t250.png" alt="Noisy t=250">
+        <p class="caption">Noisy Campanile at t=250</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_2_noisy_t500.png" alt="Noisy t=500">
+        <p class="caption">Noisy Campanile at t=500</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_2_noisy_t750.png" alt="Noisy t=750">
+        <p class="caption">Noisy Campanile at t=750</p>
+    </div>
+</div>
+<div class="image-row">
+    <div class="image-item">
+        <img src="code/part1_2_Blur_t250.png" alt="Blur t=250">
+        <p class="caption">Gaussian Blur Denoising<br>at t=250</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_2_Blur_t500.png" alt="Blur t=500">
+        <p class="caption">Gaussian Blur Denoising<br>at t=500</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_2_Blur_t750.png" alt="Blur t=750">
+        <p class="caption">Gaussian Blur Denoising<br>at t=750</p>
+    </div>
+</div>
+    <hr>
+
+    <!-- Part 1.3: One-Step Denoising -->
+    <section id="part1-3" class="section">
+        <h2>Part 1.3: One-Step Denoising</h2>
+        
+        <p>
+            Using the pretrained UNet, I estimated the noise in the image and recovered the clean image in one step:
+        </p>
+
+        <div class="formula-box">
+            \[ \hat{x}_0 = \frac{x_t - \sqrt{1 - \bar{\alpha}_t} \cdot \hat{\epsilon}}{\sqrt{\bar{\alpha}_t}} \]
+        </div>
+
+        <p>
+            The UNet takes the noisy image, timestep, and text prompt embeddings as input to predict the noise ε̂.
+        </p>
+
+<div class="image-row">
+    <div class="image-item">
+        <img src="code/part1_3_Original.png" alt="Original">
+        <p class="caption">Original</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_3_Noisy_t250.png" alt="Noisy t=250">
+        <p class="caption">Noisy<br>at t=250</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_3_Denoised_t250.png" alt="Denoised t=250">
+        <p class="caption">One-Step Denoised<br>at t=250</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_3_Noisy_t500.png" alt="Noisy t=500">
+        <p class="caption">Noisy<br>at t=500</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_3_Denoised_t500.png" alt="Denoised t=500">
+        <p class="caption">One-Step Denoised<br>at t=500</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_3_Noisy_t750.png" alt="Noisy t=750">
+        <p class="caption">Noisy<br>at t=750</p>
+    </div>
+    <div class="image-item">
+        <img src="code/part1_3_Denoised_t750.png" alt="Denoised t=750">
+        <p class="caption">One-Step Denoised<br>at t=750</p>
+    </div>
+</div>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.4: Iterative Denoising -->
+    <section id="part1-4" class="section">
+        <h2>Part 1.4: Iterative Denoising</h2>
+        
+        <p>
+            Instead of one-step denoising, I implemented iterative denoising using the DDPM update rule. 
+            Starting from a noisy image, I created strided timesteps (stride=30 from 990 to 0) and iteratively 
+            refined the image using the formula:
+        </p>
+
+        <div class="formula-box">
+            \[ x_{t'} = \frac{\sqrt{\bar{\alpha}_{t'}} \cdot \beta_t}{1 - \bar{\alpha}_t} \cdot \hat{x}_0 + \frac{\sqrt{\alpha_t} \cdot (1 - \bar{\alpha}_{t'})}{1 - \bar{\alpha}_t} \cdot x_t + v_\sigma \]
+        </div>
+
+        <p>
+            At each step, I computed \(\alpha\), \(\beta\) from the noise schedule, estimated \(\hat{x}_0\) from the current noisy image, 
+            then interpolated between \(\hat{x}_0\) and \(x_t\) with added variance.
+        </p>
+        <h3>Denoising Process</h3>
+        <p>The images below show the noisy Campanile at different timesteps (gradually becoming less noisy):</p>
+        <div class="image-row">
+            <img src="code/part1_4_noisy_t690.png" alt="t=690">
+            <img src="code/part1_4_noisy_t540.png" alt="t=540">
+            <img src="code/part1_4_noisy_t390.png" alt="t=390">
+            <img src="code/part1_4_noisy_t240.png" alt="t=240">
+            <img src="code/part1_4_noisy_t90.png" alt="t=90">
+        </div>
+        <p class="caption">Noisy Campanile at t=690 → t=540 → t=390 → t=240 → t=90</p>
+
+        <h3>Comparison</h3>
+        <div class="image-row">
+            <img src="code/part1_4_original.png" alt="Original">
+            <img src="code/part1_4_iterative.png" alt="Iteratively Denoised">
+            <img src="code/part1_4_one_step.png" alt="One-Step Denoised">
+            <img src="code/part1_4_gaussian_blur.png" alt="Gaussian Blurred">
+        </div>
+        <p class="caption">Original → Iteratively Denoised → One-Step Denoised → Gaussian Blurred</p>
+        
+        <p>
+            <strong>Observations:</strong> Iterative denoising produces the cleanest result. One-step denoising 
+            shows more artifacts, and Gaussian blur fails to recover structure.
+        </p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.5: Diffusion Model Sampling -->
+    <section id="part1-5" class="section">
+        <h2>Part 1.5: Diffusion Model Sampling</h2>
+        
+        <p>
+            By setting i_start=0 and starting from pure Gaussian noise, I used <span class="inline-code">iterative_denoise</span> 
+            to generate entirely new images from scratch with the prompt "a high quality photo".
+        </p>
+
+        <div class="image-row">
+            <img src="code/part1_5_Sample_1.png" alt="Sample 1">
+            <img src="code/part1_5_Sample_2.png" alt="Sample 2">
+            <img src="code/part1_5_Sample_3.png" alt="Sample 3">
+            <img src="code/part1_5_Sample_4.png" alt="Sample 4">
+            <img src="code/part1_5_Sample_5.png" alt="Sample 5">
+        </div>
+        <p class="caption">5 samples generated from pure noise</p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.6: Classifier-Free Guidance -->
+    <section id="part1-6" class="section">
+        <h2>Part 1.6: Classifier-Free Guidance (CFG)</h2>
+        
+        <p>
+            To improve sample quality, I implemented CFG which combines conditional and unconditional noise estimates:
+        </p>
+
+        <div class="formula-box">
+            \[ \epsilon = \epsilon_u + \gamma \cdot (\epsilon_c - \epsilon_u), \quad \text{with } \gamma = 7 \]
+        </div>
+
+        <p>
+            At each denoising step, I computed both conditional (with prompt) and unconditional (empty string) 
+            noise estimates, then extrapolated beyond the conditional estimate for stronger guidance.
+        </p>
+
+        <div class="image-row">
+            <img src="code/part1_6_Sample_1.png" alt="Sample 1">
+            <img src="code/part1_6_Sample_2.png" alt="Sample 2">
+            <img src="code/part1_6_Sample_3.png" alt="Sample 3">
+            <img src="code/part1_6_Sample_4.png" alt="Sample 4">
+            <img src="code/part1_6_Sample_5.png" alt="Sample 5">
+        </div>
+        <p class="caption">5 CFG-guided samples (γ=7)</p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.7: Image-to-Image Translation -->
+    <section id="part1-7" class="section">
+        <h2>Part 1.7: Image-to-Image Translation</h2>
+        
+        <p>
+            Using SDEdit, I edited existing images by adding noise to a specific level (controlled by i_start) 
+            and then denoising with CFG. Lower i_start means more noise and more creative freedom; 
+            higher i_start preserves more of the original structure.
+        </p>
+
+        <h3>Campanile</h3>
+        <div class="image-row">
+            <img src="code/part1_7_campanile_Original.png" alt="Original">
+            <img src="code/part1_7_campanile_i1.png" alt="i=1">
+            <img src="code/part1_7_campanile_i3.png" alt="i=3">
+            <img src="code/part1_7_campanile_i5.png" alt="i=5">
+            <img src="code/part1_7_campanile_i7.png" alt="i=7">
+            <img src="code/part1_7_campanile_i10.png" alt="i=10">
+            <img src="code/part1_7_campanile_i20.png" alt="i=20">
+        </div>
+        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+
+        <h3>My Test Image 1</h3>
+        <div class="image-row">
+            <img src="code/part1_7_myimg1_Original.png" alt="Original">
+            <img src="code/part1_7_myimg1_i1.png" alt="i=1">
+            <img src="code/part1_7_myimg1_i3.png" alt="i=3">
+            <img src="code/part1_7_myimg1_i5.png" alt="i=5">
+            <img src="code/part1_7_myimg1_i7.png" alt="i=7">
+            <img src="code/part1_7_myimg1_i10.png" alt="i=10">
+            <img src="code/part1_7_myimg1_i20.png" alt="i=20">
+        </div>
+        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+
+        <h3>My Test Image 2</h3>
+        <div class="image-row">
+            <img src="code/part1_7_myimg2_Original.png" alt="Original">
+            <img src="code/part1_7_myimg2_i1.png" alt="i=1">
+            <img src="code/part1_7_myimg2_i3.png" alt="i=3">
+            <img src="code/part1_7_myimg2_i5.png" alt="i=5">
+            <img src="code/part1_7_myimg2_i7.png" alt="i=7">
+            <img src="code/part1_7_myimg2_i10.png" alt="i=10">
+            <img src="code/part1_7_myimg2_i20.png" alt="i=20">
+        </div>
+        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.7.1: Hand-Drawn and Web Images -->
+    <section id="part1-7-1" class="section">
+        <h2>Part 1.7.1: Editing Hand-Drawn and Web Images</h2>
+
+        <p>
+            SDEdit works especially well for projecting non-photorealistic inputs onto the natural image manifold.
+        </p>
+
+        <h3>Web Image</h3>
+        <div class="image-row">
+            <img src="code/part1_7_1_web_1.png" alt="i=1">
+            <img src="code/part1_7_1_web_3.png" alt="i=3">
+            <img src="code/part1_7_1_web_5.png" alt="i=5">
+            <img src="code/part1_7_1_web_7.png" alt="i=7">
+            <img src="code/part1_7_1_web_10.png" alt="i=10">
+            <img src="code/part1_7_1_web_20.png" alt="i=20">
+            <img src="code/part1_7_1_web_25.png" alt="i=25">
+        </div>
+        <p class="caption">i_start = 1, 3, 5, 7, 10, 20, 25</p>
+
+        <h3>Hand-Drawn Image 1</h3>
+        <div class="image-row">
+            <img src="code/part1_7_1_drawn1_1.png" alt="i=1">
+            <img src="code/part1_7_1_drawn1_3.png" alt="i=3">
+            <img src="code/part1_7_1_drawn1_5.png" alt="i=5">
+            <img src="code/part1_7_1_drawn1_7.png" alt="i=7">
+            <img src="code/part1_7_1_drawn1_10.png" alt="i=10">
+            <img src="code/part1_7_1_drawn1_20.png" alt="i=20">
+            <img src="code/part1_7_1_drawn1_23.png" alt="i=23">
+        </div>
+        <p class="caption">i_start = 1, 3, 5, 7, 10, 20, 23</p>
+
+        <h3>Hand-Drawn Image 2</h3>
+        <div class="image-row">
+            <img src="code/part1_7_1_drawn2_1.png" alt="i=1">
+            <img src="code/part1_7_1_drawn2_3.png" alt="i=3">
+            <img src="code/part1_7_1_drawn2_5.png" alt="i=5">
+            <img src="code/part1_7_1_drawn2_7.png" alt="i=7">
+            <img src="code/part1_7_1_drawn2_10.png" alt="i=10">
+            <img src="code/part1_7_1_drawn2_20.png" alt="i=20">
+            <img src="code/part1_7_1_drawn2_30.png" alt="i=30">
+        </div>
+        <p class="caption">i_start = 1, 3, 5, 7, 10, 20, 30</p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.7.2: Inpainting -->
+    <section id="part1-7-2" class="section">
+        <h2>Part 1.7.2: Inpainting</h2>
+        
+        <p>
+            I implemented inpainting using the RePaint approach: at each denoising step, I kept pixels outside 
+            the mask from the original image (noised to the current timestep) while allowing the model to 
+            generate new content inside the masked region.
+        </p>
+
+        <h3>Campanile Inpainting</h3>
+        <div class="image-row">
+            <img src="code/part1_7_2_campanile_original.png" alt="Original">
+            <img src="code/part1_7_2_campanile_mask.png" alt="Mask">
+            <img src="code/part1_7_2_campanile_inpainted.png" alt="Inpainted">
+        </div>
+        <p class="caption">Original → Mask → Inpainted</p>
+
+        <h3>My Image 1 Inpainting</h3>
+        <div class="image-row">
+            <img src="code/part1_7_2_myimg3_original.png" alt="Original">
+            <img src="code/part1_7_2_myimg3_mask.png" alt="Mask">
+            <img src="code/part1_7_2_myimg3_inpainted.png" alt="Inpainted">
+        </div>
+        <p class="caption">Original → Mask → Inpainted</p>
+
+        <h3>My Image 2 Inpainting</h3>
+        <div class="image-row">
+            <img src="code/part1_7_2_myimg4_original.png" alt="Original">
+            <img src="code/part1_7_2_myimg4_mask.png" alt="Mask">
+            <img src="code/part1_7_2_myimg4_inpainted.png" alt="Inpainted">
+        </div>
+        <p class="caption">Original → Mask → Inpainted</p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.7.3: Text-Conditional Image-to-Image -->
+    <section id="part1-7-3" class="section">
+        <h2>Part 1.7.3: Text-Conditional Image-to-Image Translation</h2>
+
+        <p>
+            Instead of a generic prompt, I used specific text prompts to guide the transformation 
+            toward new semantic content while preserving spatial structure.
+        </p>
+
+        <h3>Campanile → "an oil painting of people around a campfire"</h3>
+        <div class="image-row">
+            <img src="code/part1_7_3_campanile_Original.png" alt="Original">
+            <img src="code/part1_7_3_campanile_i1.png" alt="i=1">
+            <img src="code/part1_7_3_campanile_i3.png" alt="i=3">
+            <img src="code/part1_7_3_campanile_i5.png" alt="i=5">
+            <img src="code/part1_7_3_campanile_i7.png" alt="i=7">
+            <img src="code/part1_7_3_campanile_i10.png" alt="i=10">
+            <img src="code/part1_7_3_campanile_i20.png" alt="i=20">
+        </div>
+        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+
+        <h3>My Image 1 → "a pencil sketch of a young woman"</h3>
+        <div class="image-row">
+            <img src="code/part1_7_3_myimg1_Original.png" alt="Original">
+            <img src="code/part1_7_3_myimg1_i1.png" alt="i=1">
+            <img src="code/part1_7_3_myimg1_i3.png" alt="i=3">
+            <img src="code/part1_7_3_myimg1_i5.png" alt="i=5">
+            <img src="code/part1_7_3_myimg1_i7.png" alt="i=7">
+            <img src="code/part1_7_3_myimg1_i10.png" alt="i=10">
+            <img src="code/part1_7_3_myimg1_i20.png" alt="i=20">
+        </div>
+        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+
+        <h3>My Image 2 → "a watercolor of mountains"</h3>
+        <div class="image-row">
+            <img src="code/part1_7_3_myimg2_Original.png" alt="Original">
+            <img src="code/part1_7_3_myimg2_i1.png" alt="i=1">
+            <img src="code/part1_7_3_myimg2_i3.png" alt="i=3">
+            <img src="code/part1_7_3_myimg2_i5.png" alt="i=5">
+            <img src="code/part1_7_3_myimg2_i7.png" alt="i=7">
+            <img src="code/part1_7_3_myimg2_i10.png" alt="i=10">
+            <img src="code/part1_7_3_myimg2_i20.png" alt="i=20">
+        </div>
+        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.8: Visual Anagrams -->
+    <section id="part1-8" class="section">
+        <h2>Part 1.8: Visual Anagrams</h2>
+        
+        <p>
+            Visual anagrams are images that show one thing upright and a different thing when flipped 180°. 
+            I implemented this by computing noise estimates for both orientations and averaging them:
+        </p>
+
+        <div class="formula-box">
+            \[ \epsilon = \frac{\epsilon_1 + \text{flip}(\epsilon_2)}{2} \]
+        </div>
+
+        <p>
+            At each step, I computed the CFG noise estimate for prompt 1 on the normal image, 
+            then flipped the image, computed the noise for prompt 2, flipped the result back, 
+            and averaged the two estimates.
+        </p>
+
+        <h3>Illusion 1: Young Woman ↔ Flowers in a Vase</h3>
+        <div class="image-row image-row-large">
+            <img src="code/part1_8_illusion1_normal.png" alt="Normal">
+            <img src="code/part1_8_illusion1_flipped.png" alt="Flipped">
+        </div>
+        <p class="caption">"a pencil sketch of a young woman" ↔ "a pencil sketch of flowers in a vase"</p>
+
+        <h3>Illusion 2: Mountains ↔ Valleys</h3>
+        <div class="image-row image-row-large">
+            <img src="code/part1_8_illusion2_normal.png" alt="Normal">
+            <img src="code/part1_8_illusion2_flipped.png" alt="Flipped">
+        </div>
+        <p class="caption">"a watercolor of mountains" ↔ "a watercolor of valleys"</p>
+    </section>
+
+    <hr>
+
+    <!-- Part 1.9: Hybrid Images -->
+    <section id="part1-9" class="section">
+        <h2>Part 1.9: Hybrid Images</h2>
+        
+        <p>
+            Hybrid images appear as one thing from afar (low frequencies) and another up close (high frequencies). 
+            I combined noise estimates using frequency filtering:
+        </p>
+
+        <div class="formula-box">
+            \[ \epsilon = f_{\text{lowpass}}(\epsilon_1) + f_{\text{highpass}}(\epsilon_2) \]
+        </div>
+
+        <p>
+            I applied Gaussian blur (kernel_size=33, sigma=2) to get the low-pass component from prompt 1, 
+            and subtracted the blurred version from prompt 2's estimate to get the high-pass component.
+        </p>
+
+        <h3>Hybrid 1: Skull (far) + Waterfalls (close)</h3>
+        <div class="image-container">
+            <img src="code/part1_9_hybrid1.png" alt="Hybrid 1" style="height: 256px;">
+        </div>
+        <p class="caption">"a lithograph of a skull" (low freq) + "a lithograph of waterfalls" (high freq)</p>
+
+        <h3>Hybrid 2: Old Man (far) + Campfire (close)</h3>
+        <div class="image-container">
+            <img src="code/part1_9_hybrid2.png" alt="Hybrid 2" style="height: 256px;">
+        </div>
+        <p class="caption">"an oil painting of an old man" (low freq) + "an oil painting of people around a campfire" (high freq)</p>
+    </section>
+
+    <hr>
+
+    
+</body>
+</html>
