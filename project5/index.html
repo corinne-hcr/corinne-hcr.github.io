@@ -86,7 +86,7 @@
     <header>
         <h1>Project 5: Diffusion Models</h1>
         <p class="subtitle">CS180: Intro to Computer Vision and Computational Photography</p>
-        <p class="author">Chunrui Huang · Fall 2025</p>
+        <p class="author">Chunrui Huang &middot; Fall 2025</p>
     </header>
 
     <!-- Part A -->
@@ -105,8 +105,8 @@
         <h2>Part 0: Setup</h2>
         
         <p>
-            I used the <strong>DeepFloyd IF</strong> diffusion model, a two-stage model where stage 1 produces 64×64 images 
-            and stage 2 upsamples them to 256×256. For reproducibility, I set my random seed to <strong>8</strong>.
+            I used the <strong>DeepFloyd IF</strong> diffusion model, a two-stage model where stage 1 produces 64x64 images 
+            and stage 2 upsamples them to 256x256. For reproducibility, I set my random seed to <strong>8</strong>.
         </p>
 
         <h3>Sampling from the Model</h3>
@@ -121,7 +121,7 @@
             <img src="code/a_tired_cat_in_class_steps20.png" alt="steps=20">
             <img src="code/a_tired_cat_in_class_steps50.png" alt="steps=50">
         </div>
-        <p class="caption">num_inference_steps = 10 → 20 → 50</p>
+        <p class="caption">num_inference_steps = 10  ->  20  ->  50</p>
 
         <h4>"a fashionable dog eating dinner"</h4>
         <div class="image-row">
@@ -129,7 +129,7 @@
             <img src="code/a_fashionable_dog_eating_dinner_steps20.png" alt="steps=20">
             <img src="code/a_fashionable_dog_eating_dinner_steps50.png" alt="steps=50">
         </div>
-        <p class="caption">num_inference_steps = 10 → 20 → 50</p>
+        <p class="caption">num_inference_steps = 10  ->  20  ->  50</p>
 
         <h4>"a cozy bookstore"</h4>
         <div class="image-row">
@@ -137,7 +137,7 @@
             <img src="code/a_cozy_bookstore_steps20.png" alt="steps=20">
             <img src="code/a_cozy_bookstore_steps50.png" alt="steps=50">
         </div>
-        <p class="caption">num_inference_steps = 10 → 20 → 50</p>
+        <p class="caption">num_inference_steps = 10  ->  20  ->  50</p>
 
         <p>
             <strong>Observations:</strong> With fewer steps (10), images appear blurry. At 50 steps, the model produces 
@@ -169,7 +169,7 @@
             <img src="code/part1_1_noisy_t500.png" alt="t=500">
             <img src="code/part1_1_noisy_t750.png" alt="t=750">
         </div>
-        <p class="caption">t=250 → t=500 → t=750</p>
+        <p class="caption">t=250  ->  t=500  ->  t=750</p>
     </section>
 
     <hr>
@@ -228,7 +228,7 @@
         </div>
 
         <p>
-            The UNet takes the noisy image, timestep, and text prompt embeddings as input to predict the noise ε̂.
+            The UNet takes the noisy image, timestep, and text prompt embeddings as input to predict the noise.
         </p>
 
 <div class="image-row">
@@ -292,7 +292,7 @@
             <img src="code/part1_4_noisy_t240.png" alt="t=240">
             <img src="code/part1_4_noisy_t90.png" alt="t=90">
         </div>
-        <p class="caption">Noisy Campanile at t=690 → t=540 → t=390 → t=240 → t=90</p>
+        <p class="caption">Noisy Campanile at t=690  ->  t=540  ->  t=390  ->  t=240  ->  t=90</p>
 
         <h3>Comparison</h3>
         <div class="image-row">
@@ -301,7 +301,7 @@
             <img src="code/part1_4_one_step.png" alt="One-Step Denoised">
             <img src="code/part1_4_gaussian_blur.png" alt="Gaussian Blurred">
         </div>
-        <p class="caption">Original → Iteratively Denoised → One-Step Denoised → Gaussian Blurred</p>
+        <p class="caption">Original  ->  Iteratively Denoised  ->  One-Step Denoised  ->  Gaussian Blurred</p>
         
         <p>
             <strong>Observations:</strong> Iterative denoising produces the cleanest result. One-step denoising 
@@ -356,7 +356,7 @@
             <img src="code/part1_6_Sample_4.png" alt="Sample 4">
             <img src="code/part1_6_Sample_5.png" alt="Sample 5">
         </div>
-        <p class="caption">5 CFG-guided samples (γ=7)</p>
+        <p class="caption">5 CFG-guided samples (gamma=7)</p>
     </section>
 
     <hr>
@@ -381,7 +381,7 @@
             <img src="code/part1_7_campanile_i10.png" alt="i=10">
             <img src="code/part1_7_campanile_i20.png" alt="i=20">
         </div>
-        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+        <p class="caption">Original  ->  i_start = 1, 3, 5, 7, 10, 20</p>
 
         <h3>My Test Image 1</h3>
         <div class="image-row">
@@ -393,7 +393,7 @@
             <img src="code/part1_7_myimg1_i10.png" alt="i=10">
             <img src="code/part1_7_myimg1_i20.png" alt="i=20">
         </div>
-        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+        <p class="caption">Original  ->  i_start = 1, 3, 5, 7, 10, 20</p>
 
         <h3>My Test Image 2</h3>
         <div class="image-row">
@@ -405,7 +405,7 @@
             <img src="code/part1_7_myimg2_i10.png" alt="i=10">
             <img src="code/part1_7_myimg2_i20.png" alt="i=20">
         </div>
-        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+        <p class="caption">Original  ->  i_start = 1, 3, 5, 7, 10, 20</p>
     </section>
 
     <hr>
@@ -473,7 +473,7 @@
             <img src="code/part1_7_2_campanile_mask.png" alt="Mask">
             <img src="code/part1_7_2_campanile_inpainted.png" alt="Inpainted">
         </div>
-        <p class="caption">Original → Mask → Inpainted</p>
+        <p class="caption">Original  ->  Mask  ->  Inpainted</p>
 
         <h3>My Image 1 Inpainting</h3>
         <div class="image-row">
@@ -481,7 +481,7 @@
             <img src="code/part1_7_2_myimg3_mask.png" alt="Mask">
             <img src="code/part1_7_2_myimg3_inpainted.png" alt="Inpainted">
         </div>
-        <p class="caption">Original → Mask → Inpainted</p>
+        <p class="caption">Original  ->  Mask  ->  Inpainted</p>
 
         <h3>My Image 2 Inpainting</h3>
         <div class="image-row">
@@ -489,7 +489,7 @@
             <img src="code/part1_7_2_myimg4_mask.png" alt="Mask">
             <img src="code/part1_7_2_myimg4_inpainted.png" alt="Inpainted">
         </div>
-        <p class="caption">Original → Mask → Inpainted</p>
+        <p class="caption">Original  ->  Mask  ->  Inpainted</p>
     </section>
 
     <hr>
@@ -503,7 +503,7 @@
             toward new semantic content while preserving spatial structure.
         </p>
 
-        <h3>Campanile → "an oil painting of people around a campfire"</h3>
+        <h3>Campanile  ->  "an oil painting of people around a campfire"</h3>
         <div class="image-row">
             <img src="code/part1_7_3_campanile_Original.png" alt="Original">
             <img src="code/part1_7_3_campanile_i1.png" alt="i=1">
@@ -513,9 +513,9 @@
             <img src="code/part1_7_3_campanile_i10.png" alt="i=10">
             <img src="code/part1_7_3_campanile_i20.png" alt="i=20">
         </div>
-        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+        <p class="caption">Original  ->  i_start = 1, 3, 5, 7, 10, 20</p>
 
-        <h3>My Image 1 → "a pencil sketch of a young woman"</h3>
+        <h3>My Image 1  ->  "a pencil sketch of a young woman"</h3>
         <div class="image-row">
             <img src="code/part1_7_3_myimg1_Original.png" alt="Original">
             <img src="code/part1_7_3_myimg1_i1.png" alt="i=1">
@@ -525,9 +525,9 @@
             <img src="code/part1_7_3_myimg1_i10.png" alt="i=10">
             <img src="code/part1_7_3_myimg1_i20.png" alt="i=20">
         </div>
-        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+        <p class="caption">Original  ->  i_start = 1, 3, 5, 7, 10, 20</p>
 
-        <h3>My Image 2 → "a watercolor of mountains"</h3>
+        <h3>My Image 2  ->  "a watercolor of mountains"</h3>
         <div class="image-row">
             <img src="code/part1_7_3_myimg2_Original.png" alt="Original">
             <img src="code/part1_7_3_myimg2_i1.png" alt="i=1">
@@ -537,7 +537,7 @@
             <img src="code/part1_7_3_myimg2_i10.png" alt="i=10">
             <img src="code/part1_7_3_myimg2_i20.png" alt="i=20">
         </div>
-        <p class="caption">Original → i_start = 1, 3, 5, 7, 10, 20</p>
+        <p class="caption">Original  ->  i_start = 1, 3, 5, 7, 10, 20</p>
     </section>
 
     <hr>
@@ -547,7 +547,7 @@
         <h2>Part 1.8: Visual Anagrams</h2>
         
         <p>
-            Visual anagrams are images that show one thing upright and a different thing when flipped 180°. 
+            Visual anagrams are images that show one thing upright and a different thing when flipped 180&deg;. 
             I implemented this by computing noise estimates for both orientations and averaging them:
         </p>
 
@@ -561,19 +561,19 @@
             and averaged the two estimates.
         </p>
 
-        <h3>Illusion 1: Young Woman ↔ Flowers in a Vase</h3>
+        <h3>Illusion 1: Young Woman  <->  Flowers in a Vase</h3>
         <div class="image-row image-row-large">
             <img src="code/part1_8_illusion1_normal.png" alt="Normal">
             <img src="code/part1_8_illusion1_flipped.png" alt="Flipped">
         </div>
-        <p class="caption">"a pencil sketch of a young woman" ↔ "a pencil sketch of flowers in a vase"</p>
+        <p class="caption">"a pencil sketch of a young woman"  <->  "a pencil sketch of flowers in a vase"</p>
 
-        <h3>Illusion 2: Mountains ↔ Valleys</h3>
+        <h3>Illusion 2: Mountains  <->  Valleys</h3>
         <div class="image-row image-row-large">
             <img src="code/part1_8_illusion2_normal.png" alt="Normal">
             <img src="code/part1_8_illusion2_flipped.png" alt="Flipped">
         </div>
-        <p class="caption">"a watercolor of mountains" ↔ "a watercolor of valleys"</p>
+        <p class="caption">"a watercolor of mountains"  <->  "a watercolor of valleys"</p>
     </section>
 
     <hr>
@@ -611,6 +611,245 @@
 
     <hr>
 
-    
+    <!-- Part B: Flow Matching from Scratch -->
+    <section class="section">
+        <h2>Part B: Flow Matching from Scratch</h2>
+        <p>
+            In Part B, I trained my own flow matching model on MNIST from scratch, implementing UNet architectures 
+            with time and class conditioning, and exploring iterative denoising for generative tasks.
+        </p>
+    </section>
+
+    <hr>
+
+    <!-- Part B 1: Training a Single-Step Denoising UNet -->
+    <section id="partb1" class="section">
+        <h2>Part B.1: Training a Single-Step Denoising UNet</h2>
+
+        <h3>1.1 Implementing the UNet</h3>
+        <p>
+            I implemented a UNet architecture consisting of downsampling and upsampling blocks with skip connections. 
+            The network uses the following building blocks:
+        </p>
+        <p>
+            <strong>Conv:</strong> A standard convolutional block with Conv2d (kernel=3, stride=1, padding=1), 
+            BatchNorm2d, and GELU activation. This maintains spatial resolution while changing channel dimension.
+        </p>
+        <p>
+            <strong>DownConv:</strong> A downsampling block with Conv2d (kernel=3, stride=2, padding=1), 
+            BatchNorm2d, and GELU. This reduces spatial resolution by half.
+        </p>
+        <p>
+            <strong>UpConv:</strong> An upsampling block with ConvTranspose2d (kernel=4, stride=2, padding=1), 
+            BatchNorm2d, and GELU. This doubles the spatial resolution.
+        </p>
+        <p>
+            <strong>Flatten/Unflatten:</strong> Flatten uses view() to reshape the 7x7 feature map to a 1D vector. 
+            Unflatten reshapes back to 7x7 spatial dimensions.
+        </p>
+        <p>
+            The UNet encoder progressively downsamples the input while increasing channels, and the decoder 
+            upsamples while using skip connections to preserve fine details from earlier layers.
+        </p>
+
+        <h3>1.2 Using the UNet to Train a Denoiser</h3>
+        <p>
+            The denoiser is trained using L2 loss to map noisy images \(z\) to clean images \(x\):
+        </p>
+        <div class="formula-box">
+            \[ L = \mathbb{E}_{z,x} \|D_{\theta}(z) - x\|^2 \]
+        </div>
+        <p>
+            Training data pairs are generated using the noising process:
+        </p>
+        <div class="formula-box">
+            \[ z = x + \sigma \epsilon, \quad \text{where } \epsilon \sim \mathcal{N}(0, I) \]
+        </div>
+
+        <h4>Visualization of Noising Process</h4>
+        <div class="image-container">
+            <img src="code/noisy_visualization.png" alt="Noising visualization">
+        </div>
+        <p class="caption">Noising process with sigma = [0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]</p>
+
+        <h3>1.2.1 Training</h3>
+        <p>
+            I trained the denoiser with sigma = 0.5 for 5 epochs using Adam optimizer (lr=1e-4), batch size 256, and hidden dimension D=128.
+        </p>
+
+        <h4>Training Loss Curve</h4>
+        <div class="image-container">
+            <img src="code/training_curve_sigma0.5.png" style="width: 700px; height: auto;" alt="Training loss curve">
+        </div>
+        <p class="caption">Training loss curve for sigma = 0.5</p>
+
+        <h4>Sample Results</h4>
+        <div class="image-row">
+            <img src="code/denoising_epoch1.png" alt="Epoch 1" style="height: 180px;">
+            <img src="code/denoising_epoch5.png" alt="Epoch 5" style="height: 180px;">
+        </div>
+        <p class="caption">Epoch 1 -> Epoch 5 (top: clean, middle: noisy, bottom: denoised)</p>
+
+        <h3>1.2.2 Out-of-Distribution Testing</h3>
+        <p>
+            I tested the denoiser (trained with sigma = 0.5) on different noise levels to evaluate its generalization.
+        </p>
+
+        <div class="image-container">
+            <img src="code/ood_testing.png" style="height: 160px;" alt="OOD testing">
+        </div>
+        <p class="caption">OOD testing with sigma = [0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0] (top: clean, middle: noisy, bottom: denoised)</p>
+
+        <h3>1.2.3 Denoising Pure Noise</h3>
+        <p>
+            To make denoising a generative task, I trained a model to denoise pure Gaussian noise.
+        </p>
+
+        <h4>Training Loss Curve</h4>
+        <div class="image-container">
+            <img src="code/training_curve_pure_noise.png" style="width: 700px; height: auto;" alt="Training loss curve for pure noise">
+        </div>
+        <p class="caption">Training loss curve for pure noise denoising</p>
+
+        <h4>Sample Results After Epoch 1</h4>
+        <div class="image-container">
+            <img src="code/pure_noise_epoch1.png" alt="Pure noise epoch 1">
+        </div>
+        <p class="caption">Pure noise denoising results after epoch 1 (top: noise input, bottom: output)</p>
+
+        <h4>Sample Results After Epoch 5</h4>
+        <div class="image-container">
+            <img src="code/pure_noise_epoch5.png" alt="Pure noise epoch 5">
+        </div>
+        <p class="caption">Pure noise denoising results after epoch 5 (top: noise input, bottom: output)</p>
+
+        <p>
+            <strong>Patterns Observed:</strong> The generated outputs appear as blurry, averaged versions of the training digits. 
+            This happens because with MSE loss, the model learns to predict the point that minimizes the sum of squared distances 
+            to all training examples - essentially the centroid of the training distribution. Since the input is pure noise with 
+            no information about which digit to generate, the model outputs an average of all possible digits, resulting in 
+            blurry, digit-like but non-specific patterns. This demonstrates why single-step denoising is insufficient for 
+            high-quality generation - we need iterative denoising to progressively refine the output.
+        </p>
+    </section>
+
+    <hr>
+
+    <!-- Part B 2: Training a Flow Matching Model -->
+    <section id="partb2" class="section">
+        <h2>Part B.2: Training a Flow Matching Model</h2>
+
+        <p>
+            For iterative denoising, I implemented flow matching which learns to predict the flow from noisy to clean data. 
+            The intermediate noisy samples are constructed via linear interpolation:
+        </p>
+        <div class="formula-box">
+            \[ x_t = (1-t)x_0 + tx_1 \quad \text{where } x_0 \sim \mathcal{N}(0, 1), t \in [0, 1] \]
+        </div>
+        <p>
+            The flow (velocity) is the derivative with respect to time:
+        </p>
+        <div class="formula-box">
+            \[ u(x_t, t) = \frac{d}{dt} x_t = x_1 - x_0 \]
+        </div>
+        <p>
+            The learning objective is:
+        </p>
+        <div class="formula-box">
+            \[ L = \mathbb{E}_{x_0, x_1, t} \|(x_1 - x_0) - u_\theta(x_t, t)\|^2 \]
+        </div>
+
+        <h3>2.1 Adding Time Conditioning to UNet</h3>
+        <p>
+            I injected the time conditioning signal \(t\) into the UNet using FCBlocks. The conditioning modulates 
+            the unflatten and up1 layers via multiplication:
+        </p>
+        <div class="formula-box">
+            \[ \text{unflatten} = \text{unflatten} \times t_1, \quad \text{up1} = \text{up1} \times t_2 \]
+        </div>
+
+        <h3>2.2 Training the Time-Conditioned UNet</h3>
+        <p>
+            I trained the time-conditioned UNet for 10 epochs with batch size 64, hidden dimension D=64, 
+            initial learning rate 1e-2, and exponential learning rate decay.
+        </p>
+
+        <h4>Training Loss Curve</h4>
+        <div class="image-container">
+            <img src="code/training_curve_time.png" style="width: 700px; height: auto;" alt="Time-conditioned training loss">
+        </div>
+        <p class="caption">Training loss curve for time-conditioned UNet</p>
+
+        <h3>2.3 Sampling from the Time-Conditioned UNet</h3>
+        <div class="image-row">
+            <img src="code/time_samples_epoch1.png" alt="Epoch 1" style="height: 200px;">
+            <img src="code/time_samples_epoch5.png" alt="Epoch 5" style="height: 200px;">
+            <img src="code/time_samples_epoch10.png" alt="Epoch 10" style="height: 200px;">
+        </div>
+        <p class="caption">Epoch 1 -> Epoch 5 -> Epoch 10</p>
+        <h3>2.4 Adding Class-Conditioning to UNet</h3>
+        <p>
+            To gain control over which digit to generate, I added class conditioning using one-hot vectors. 
+            The conditioning is applied with dropout (p_uncond = 0.1) to enable classifier-free guidance:
+        </p>
+        <div class="formula-box">
+            \[ \text{unflatten} = c_1 \times \text{unflatten} + t_1, \quad \text{up1} = c_2 \times \text{up1} + t_2 \]
+        </div>
+
+        <h3>2.5 Training the Class-Conditioned UNet</h3>
+
+        <h4>Training Loss Curve</h4>
+        <div class="image-container">
+            <img src="code/training_curve_class.png" style="width: 700px; height: auto;" alt="Class-conditioned training loss">
+        </div>
+        <p class="caption">Training loss curve for class-conditioned UNet</p>
+
+        <h3>2.6 Sampling from the Class-Conditioned UNet</h3>
+        <p>
+            I used classifier-free guidance with gamma = 5.0 to generate 4 instances of each digit (0-9).
+        </p>
+
+        </p>
+        <div class="image-row">
+            <img src="code/class_samples_Epoch_1.png" alt="Epoch 1" style="height: 120px;">
+            <img src="code/class_samples_Epoch_5.png" alt="Epoch 5" style="height: 120px;">
+            <img src="code/class_samples_Epoch_10.png" alt="Epoch 10" style="height: 120px;">
+        </div>
+        <p class="caption">Epoch 1 -> Epoch 5 -> Epoch 10 (gamma = 5.0)</p>
+
+        <h3>Training Without Learning Rate Scheduler</h3>
+        <p>
+            To remove the exponential learning rate scheduler while maintaining performance, I used a constant 
+            lower learning rate of 1e-3 (instead of starting at 1e-2 and decaying). This provides stable 
+            training without the complexity of a scheduler.
+        </p>
+
+        <h4>Training Loss Curve (No Scheduler)</h4>
+        <div class="image-container">
+            <img src="code/training_curve_no_sched.png" style="width: 700px; height: auto;" alt="No scheduler training loss">
+        </div>
+        <p class="caption">Training loss curve without learning rate scheduler (lr = 1e-3)</p>
+
+        <div class="image-row">
+            <img src="code/class_samples_No_Scheduler_Epoch_1.png" alt="Epoch 1" style="height: 120px;">
+            <img src="code/class_samples_No_Scheduler_Epoch_5.png" alt="Epoch 5" style="height: 120px;">
+            <img src="code/class_samples_No_Scheduler_Epoch_10.png" alt="Epoch 10" style="height: 120px;">
+        </div>
+        <p class="caption">Epoch 1 -> Epoch 5 -> Epoch 10 (no scheduler, lr = 1e-3)</p>
+
+        <p>
+            By using a constant learning rate of 1e-3, the model achieves comparable results to the version with 
+            the exponential scheduler. The key insight is that the scheduler's main effect is to reduce the 
+            learning rate over time, which can be approximated by simply using a smaller constant learning rate 
+            from the start.
+        </p>
+    </section>
+
+    <hr>
+
+    <footer>
+        <p>CS180 Project 5 - Chunrui Huang - Fall 2025</p>
+    </footer>
+
 </body>
 </html>
